@@ -61,6 +61,7 @@ bool do_remove_head_quiet(int argc, char *argv[]);
 bool do_reverse(int argc, char *argv[]);
 bool do_size(int argc, char *argv[]);
 bool do_show(int argc, char *argv[]);
+bool do_sort(int argc, char *argv[]);
 
 static void queue_init();
 
@@ -83,7 +84,10 @@ static void console_init()
     add_cmd("reverse", do_reverse, "                | Reverse queue");
     add_cmd("size", do_size,
             " [n]            | Compute queue size n times (default: n == 1)");
+
     add_cmd("show", do_show, "                | Show queue contents");
+    // sort
+    add_cmd("sort", do_sort, "                | Sort the queue");
     add_param("length", &string_length, "Maximum length of displayed string",
               NULL);
     add_param("malloc", &fail_probability, "Malloc failure probability percent",
@@ -91,7 +95,20 @@ static void console_init()
     add_param("fail", &fail_limit,
               "Number of times allow queue operations to return false", NULL);
 }
-
+bool do_sort(int argc, char *argv[])
+{
+    if (argc != 1) {
+        report(1, "%s takes no arguments", argv[0]);
+        return false;
+    }
+    bool ok = true;
+    error_check();
+    if (exception_setup(true))
+        q_sort(q);
+    exception_cancel();
+    show_queue(3);
+    return ok && !error_check();
+}
 bool do_new(int argc, char *argv[])
 {
     if (argc != 1) {
@@ -464,10 +481,7 @@ static bool show_queue(int vlevel)
             report(vlevel, " ... ]");
     } else {
         report(vlevel, " ... ]");
-        report(
-            vlevel,
-            "ERROR:  Either list has cycle, or queue has more than %d elements",
-            qcnt);
+        report(vlevel, "ERROR: queue has more than %d elements", qcnt);
         ok = false;
     }
     return ok;
