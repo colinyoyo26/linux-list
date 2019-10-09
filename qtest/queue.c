@@ -163,8 +163,8 @@ void q_reverse(queue_t *q)
     if (!q || size < 2)
         return;
 
-    struct list_head *prev, *node;
-    list_for_each (node, &q->list) {
+    struct list_head *prev, *node, *safe;
+    list_for_each_safe (node, safe, &q->list) {
         prev = node->prev;
         node->prev = node->next;
         node->next = prev;
