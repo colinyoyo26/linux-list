@@ -37,8 +37,11 @@ int main(int argc, char **argv)
     struct timespec start, end;
     uint16_t values[atoi(argv[1])];
     uint16_t method = atoi(argv[2]);
-
+#ifdef RANDOM
     random_shuffle_array(values, (uint16_t) ARRAY_SIZE(values));
+#elif INCREASE
+    increasing_array(values, (uint16_t) ARRAY_SIZE(values));
+#endif
     INIT_LIST_HEAD(&testlist);
     assert(list_empty(&testlist));
 
