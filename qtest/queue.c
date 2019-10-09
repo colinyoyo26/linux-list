@@ -173,3 +173,10 @@ void q_reverse(queue_t *q)
     (q->list).prev = (q->list).next;
     (q->list).next = prev;
 }
+
+void q_sort(queue_t *q)
+{
+    if (!q)
+        return;
+    list_msort(&q->list);
+}
