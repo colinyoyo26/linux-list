@@ -171,13 +171,13 @@ bool do_insert_head(int argc, char *argv[])
                 if (!first->value) {
                     report(1, "ERROR: Failed to save copy of string in list");
                     ok = false;
-                } else if (r == 0 && inserts == q->head->value) {
+                } else if (r == 0 && inserts == first->value) {
                     report(1,
                            "ERROR: Need to allocate and copy string for new "
                            "list element");
                     ok = false;
                     break;
-                } else if (r == 1 && lasts == q->head->value) {
+                } else if (r == 1 && lasts == first->value) {
                     report(1,
                            "ERROR: Need to allocate separate string for each "
                            "list element");
@@ -210,6 +210,7 @@ bool do_insert_tail(int argc, char *argv[])
     int reps = 1;
     int r;
     bool ok = true;
+    queue_t *first = list_first_entry(&q->list, queue_t, list);
     if (argc != 2 && argc != 3) {
         report(1, "%s needs 1-2 arguments", argv[0]);
         return false;
@@ -229,7 +230,7 @@ bool do_insert_tail(int argc, char *argv[])
             bool rval = q_insert_tail(q, inserts);
             if (rval) {
                 qcnt++;
-                if (!q->head->value) {
+                if (!first->value) {
                     report(1, "ERROR: Failed to save copy of string in list");
                     ok = false;
                 }
@@ -284,7 +285,7 @@ bool do_remove_head(int argc, char *argv[])
 
     if (q == NULL)
         report(3, "Warning: Calling remove head on null queue");
-    else if (q->head == NULL)
+    else if (list_empty(&q->list))
         report(3, "Warning: Calling remove head on empty queue");
     error_check();
     bool rval = false;
@@ -345,7 +346,7 @@ bool do_remove_head_quiet(int argc, char *argv[])
     bool ok = true;
     if (q == NULL)
         report(3, "Warning: Calling remove head on null queue");
-    else if (q->head == NULL)
+    else if (list_empty(&q->list))
         report(3, "Warning: Calling remove head on empty queue");
     error_check();
     bool rval = false;
@@ -441,12 +442,12 @@ static bool show_queue(int vlevel)
         return true;
     }
     report_noreturn(vlevel, "q = [");
-    list_ele_t *e = q->head;
+    queue_t *e = list_first_entry(&q->list, queue_t, list);
     if (exception_setup(true)) {
         while (ok && e && cnt < qcnt) {
             if (cnt < big_queue_size)
                 report_noreturn(vlevel, cnt == 0 ? "%s" : " %s", e->value);
-            e = e->next;
+            e = list_first_entry(&e->list, queue_t, list);
             cnt++;
             ok = ok && !error_check();
         }
