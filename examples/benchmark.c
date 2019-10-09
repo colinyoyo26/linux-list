@@ -62,6 +62,11 @@ int main(int argc, char **argv)
         INSERT_ANALYSIS;
     }
 
+    if (!strcmp("qt", argv[2])) {
+        QUICK_ANALYSIS;
+        INSERT_ANALYSIS;
+    }
+
     if (!strcmp("all", argv[2])) {
         MERGE_ANALYSIS;
         QUICK_ANALYSIS;
