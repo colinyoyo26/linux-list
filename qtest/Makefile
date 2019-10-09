@@ -1,12 +1,9 @@
 CC = gcc
 CFLAGS = -O0 -g -Wall -Werror -I../include -I../private
 
-GIT_HOOKS := .git/hooks/applied
-all: $(GIT_HOOKS) qtest
 
-$(GIT_HOOKS):
-	@scripts/install-git-hooks
-	@echo
+all:  qtest
+
 
 queue.o: queue.c queue.h harness.h
 	$(CC) $(CFLAGS) -c queue.c 
