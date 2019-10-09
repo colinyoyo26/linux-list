@@ -1,7 +1,6 @@
 CC = gcc
 CFLAGS = -O0 -g -Wall -Werror -I../include -I../private
 
-
 all:  qtest
 
 
@@ -9,7 +8,7 @@ queue.o: queue.c queue.h harness.h
 	$(CC) $(CFLAGS) -c queue.c 
 
 qtest: qtest.c report.c console.c harness.c queue.o
-	$(CC) $(CFLAGS) -o qtest qtest.c report.c console.c harness.c queue.o
+	$(CC) $(CFLAGS) -o qtest qtest.c report.c console.c harness.c merge-sort.c quick-sort.c insert-sort.c queue.o
 
 test: qtest scripts/driver.py
 	scripts/driver.py
